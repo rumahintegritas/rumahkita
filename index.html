@@ -49,14 +49,14 @@
         /* Header Atas Saat Aplikasi Dibuka */
         header { 
             background: #ffffff; border-bottom: 1px solid #e2e8f0;
-            padding: 16px 30px; display: none; justify-content: space-between; align-items: center; 
+            padding: 14px 30px; display: none; justify-content: space-between; align-items: center; 
             z-index: 20; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
         header.active { display: flex; }
         
-        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
         .nav-btn { 
-            background: #0f172a; color: white; border: none; padding: 9px 16px; 
+            background: #0f172a; color: white; border: none; padding: 8px 14px; 
             border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; 
             display: flex; align-items: center; gap: 6px; transition: background 0.2s; 
         }
@@ -64,7 +64,12 @@
         .logout-btn { background: #ef4444; }
         .logout-btn:hover { background: #dc2626; }
         
-        .header-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; }
+        .admin-badge {
+            display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #475569; font-weight: 500;
+        }
+        .status-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block; }
+
+        .header-title { font-size: 1rem; font-weight: 700; color: #0f172a; }
 
         /* Halaman Utama / Menu Pilihan */
         #home-view { 
@@ -121,8 +126,11 @@
 
     <!-- Header Wadah Saat Menu atau Aplikasi Dibuka -->
     <header id="app-header">
-        <div class="header-actions">
+        <div class="header-left">
             <button id="back-home-btn" class="nav-btn" onclick="goHome()" style="display:none;">← Menu Utama</button>
+            <div class="admin-badge">
+                <span class="status-dot"></span> Halo, Admin
+            </div>
         </div>
         <div class="header-title" id="current-app-title">Portal Layanan Terpadu</div>
         <button class="nav-btn logout-btn" onclick="handleLogout()">Keluar (Logout)</button>
@@ -135,15 +143,17 @@
         <p class="sub-heading">Pilih modul di bawah ini untuk masuk ke sistem aplikasi yang diinginkan.</p>
         
         <div class="steps-container">
+            <!-- Kartu 1: Penugasan ASN dengan Deskripsi yang Disesuaikan -->
             <div class="step-card" onclick="openApp('app1', 'Modul Penugasan ASN')">
                 <div class="card-top">
                     <div class="step-icon-box">📂</div>
                     <div class="step-arrow">→</div>
                 </div>
-                <div class="step-title">Penugasan ASN </div>
-                <div class="step-desc">Kelola sistem administrasi dan pemrosesan mutasi pegawai secara terpadu.</div>
+                <div class="step-title">Penugasan ASN</div>
+                <div class="step-desc">Kelola administrasi, penataan, dan pemrosesan penugasan pegawai secara terpadu.</div>
             </div>
 
+            <!-- Kartu 2: Perpanjangan PPPK PW -->
             <div class="step-card" onclick="openApp('app2', 'Modul Perpanjangan PPPK PW')">
                 <div class="card-top">
                     <div class="step-icon-box">👥</div>
@@ -179,19 +189,16 @@
             }
         }
 
-        // Shortcut tekan tombol Enter untuk login
         document.getElementById('password-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') { handleLogin(); }
         });
 
         function handleLogout() {
-            // Sembunyikan semua dan kembali ke halaman login
             document.getElementById('app-header').classList.remove('active');
             document.getElementById('home-view').classList.remove('active');
             document.getElementById('content-area').classList.remove('active');
             document.getElementById('login-view').classList.remove('hidden');
             
-            // Sembunyikan iframe
             document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
             document.getElementById('back-home-btn').style.display = 'none';
             document.getElementById('current-app-title').innerText = "Portal Layanan Terpadu";
