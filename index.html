@@ -99,22 +99,22 @@
         }
         .platform-subtitle {
             background: rgba(255, 255, 255, 0.07); padding: 6px 20px; border-radius: 20px;
-            font-size: 0.95rem; font-weight: 600; margin-bottom: 50px; display: inline-block;
+            font-size: 0.95rem; font-weight: 600; margin-bottom: 40px; display: inline-block;
             backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.12);
             color: #94a3b8;
         }
 
-        /* Container Tombol Melingkar Beranimasi */
+        /* Container Tombol Melingkar Beranimasi (4 Kolom) */
         .circle-menu-container {
-            display: flex; gap: 50px; justify-content: center; align-items: center; flex-wrap: wrap;
-            max-width: 900px; width: 100%;
+            display: flex; gap: 30px; justify-content: center; align-items: center; flex-wrap: wrap;
+            max-width: 1100px; width: 100%;
         }
 
         /* Tombol Bundar Estetik Beranimasi Melayang dengan Nuansa Elegan */
         .circle-card {
-            width: 240px; height: 240px; background: rgba(30, 41, 59, 0.9);
+            width: 210px; height: 210px; background: rgba(30, 41, 59, 0.9);
             border-radius: 50%; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; cursor: pointer; text-align: center; padding: 25px;
+            align-items: center; cursor: pointer; text-align: center; padding: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); color: #f8fafc;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative; border: 2px solid rgba(255, 255, 255, 0.12);
@@ -123,13 +123,14 @@
 
         @keyframes floatAnim {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
+            50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
 
-        .circle-card:nth-child(2) {
-            animation-delay: 2s; /* Jeda animasi melayang selang-seling */
-        }
+        .circle-card:nth-child(1) { animation-delay: 0s; }
+        .circle-card:nth-child(2) { animation-delay: 1s; }
+        .circle-card:nth-child(3) { animation-delay: 2s; }
+        .circle-card:nth-child(4) { animation-delay: 3s; }
 
         .circle-card:hover {
             transform: scale(1.08) translateY(-6px);
@@ -138,9 +139,9 @@
             box-shadow: 0 30px 60px rgba(56, 189, 248, 0.2);
         }
 
-        .circle-icon { font-size: 2.8rem; margin-bottom: 12px; }
-        .circle-title { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
-        .circle-desc { font-size: 0.78rem; color: #94a3b8; line-height: 1.35; }
+        .circle-icon { font-size: 2.4rem; margin-bottom: 10px; }
+        .circle-title { font-size: 1rem; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+        .circle-desc { font-size: 0.72rem; color: #94a3b8; line-height: 1.3; }
 
         /* Area Wadah iframe */
         .content-area { flex: 1; position: relative; display: none; background: #ffffff; }
@@ -174,7 +175,7 @@
         <button class="nav-btn logout-btn" onclick="handleLogout()">Keluar (Logout)</button>
     </header>
 
-    <!-- 2. TAMPILAN MENU UTAMA (GAYA DIGITAL ELEGAN & GELAP) -->
+    <!-- 2. TAMPILAN MENU UTAMA (4 MODUL MELAYANG) -->
     <div id="home-view">
         <h1 class="platform-title">Portal Layanan Mutasi</h1>
         <div class="platform-subtitle">Dashboard Manajemen Tim Mutasi</div>
@@ -192,6 +193,20 @@
                 <div class="circle-icon">👥</div>
                 <div class="circle-title">Perpanjangan PPPK PW</div>
                 <div class="circle-desc">Kelola sistem penataan serta pengelolaan data perpanjangan PPPK.</div>
+            </div>
+
+            <!-- Kartu 3: Mutasi Internal (Coming Soon) -->
+            <div class="circle-card" onclick="showComingSoon('Mutasi Internal')">
+                <div class="circle-icon">🔄</div>
+                <div class="circle-title">Mutasi Internal</div>
+                <div class="circle-desc">Pengelolaan perpindahan pegawai dalam satu instansi.</div>
+            </div>
+
+            <!-- Kartu 4: Mutasi Antar Instansi (Coming Soon) -->
+            <div class="circle-card" onclick="showComingSoon('Mutasi Antar Instansi')">
+                <div class="circle-icon">🏛️</div>
+                <div class="circle-title">Mutasi Antar Instansi</div>
+                <div class="circle-desc">Administrasi perpindahan pegawai antar instansi pemerintah.</div>
             </div>
         </div>
     </div>
@@ -244,6 +259,11 @@
 
             document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
             document.getElementById(appId).style.display = 'block';
+        }
+
+        // Fungsi Notifikasi Coming Soon untuk Menu Baru
+        function showComingSoon(moduleName) {
+            alert(`⚠️ Mohon Maaf\n\nModul "${moduleName}" saat ini sedang dalam tahap pengembangan (Coming Soon). Silakan akses kembali nanti.`);
         }
 
         function goHome() {
