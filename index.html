@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Alur Layanan Terpadu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Latar belakang abu-abu terang bersih khas poster */
+        body { 
+            background: #eef2f6; 
+            color: #1e293b; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+        
+        /* Header Wadah Saat Aplikasi Dibuka */
+        header { 
+            background: #b91c1c; color: white; padding: 14px 24px; 
+            display: none; justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 20;
+        }
+        header.active { display: flex; }
+        .back-btn { 
+            background: #ffffff; color: #b91c1c; border: none; padding: 8px 16px; 
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 700; 
+            display: flex; align-items: center; gap: 6px; transition: 0.2s; 
+        }
+        .back-btn:hover { background: #f8fafc; }
+        .header-title { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px; }
+
+        /* Halaman Utama Wadah (Gaya Infografis) */
+        #home-view { 
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            padding: 30px; text-align: center; overflow-y: auto; 
+        }
+        #home-view.hidden { display: none; }
+        
+        /* Judul Merah Khas Poster */
+        .poster-title-container {
+            margin-bottom: 40px;
+            border-bottom: 3px solid #b91c1c;
+            padding-bottom: 15px;
+            max-width: 700px;
+            width: 100%;
+        }
+        .main-heading { font-size: 1.8rem; font-weight: 800; color: #b91c1c; text-transform: uppercase; letter-spacing: 1px; }
+        .sub-heading { font-size: 0.95rem; color: #475569; margin-top: 6px; font-weight: 600; }
+
+        /* Container Langkah-langkah */
+        .steps-container { 
+            display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; max-width: 850px; width: 100%; 
+        }
+        
+        /* Kartu Langkah Mengikuti Gaya Poster */
+        .step-card { 
+            background: white; border: 2px solid #cbd5e1; border-radius: 12px; 
+            padding: 35px 25px 25px 25px; width: 300px; text-align: center; cursor: pointer; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
+            transition: all 0.3s ease; position: relative; 
+        }
+        
+        /* Lingkaran / Kotak Nomor Merah di Atas Kartu */
+        .step-number {
+            position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+            background: #b91c1c; color: white; width: 44px; height: 44px;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.4);
+        }
+
+        .step-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 25px -5px rgba(185, 28, 28, 0.15); 
+            border-color: #b91c1c; 
+        }
+        
+        .step-icon { font-size: 2.8rem; margin-top: 10px; margin-bottom: 15px; display: block; }
+        .step-title { font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+        .step-desc { font-size: 0.88rem; color: #475569; line-height: 1.5; font-weight: 500; }
+
+        /* Area Wadah iframe untuk Menampung Aplikasi */
+        .content-area { flex: 1; position: relative; display: none; background: #ffffff; }
+        .content-area.active { display: block; }
+        iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Header Wadah Saat Salah Satu Aplikasi Dibuka -->
+    <header id="app-header">
+        <button class="back-btn" onclick="goHome()">← KEMBALI KE MENU</button>
+        <div class="header-title" id="current-app-title">PORTAL LAYANAN</div>
+        <div style="width: 140px;"></div>
+    </header>
+
+    <!-- Halaman Utama Wadah (Tampilan Infografis) -->
+    <div id="home-view">
+        <div class="poster-title-container">
+            <h1 class="main-heading">PORTAL LAYANAN MUTASI & PPPK</h1>
+            <p class="sub-heading">Silakan pilih tahapan modul di bawah ini untuk mengakses sistem</p>
+        </div>
+        
+        <div class="steps-container">
+            <!-- Kartu 1: Mutasi OSDM -->
+            <div class="step-card" onclick="openApp('app1', 'Modul Mutasi OSDM')">
+                <div class="step-number">1</div>
+                <span class="step-icon">📂</span>
+                <div class="step-title">Mutasi OSDM</div>
+                <div class="step-desc">Akses sistem pengelolaan dan administrasi mutasi pegawai secara terpadu.</div>
+            </div>
+
+            <!-- Kartu 2: PPPK PW -->
+            <div class="step-card" onclick="openApp('app2', 'Modul PPPK PW')">
+                <div class="step-number">2</div>
+                <span class="step-icon">👥</span>
+                <div class="step-title">PPPK PW</div>
+                <div class="step-desc">Akses sistem penataan dan pengelolaan data PPPK wilayah kerja terkait.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Area Wadah Pemuat Iframe dengan URL Anda -->
+    <div class="content-area" id="content-area">
+        <iframe id="app1" src="https://rumahintegritas.github.io/mutasiosdm/"></iframe>
+        <iframe id="app2" src="https://rumahintegritas.github.io/pppkpw2627/" style="display:none;"></iframe>
+    </div>
+
+    <script>
+        function openApp(appId, appName) {
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('app-header').classList.add('active');
+            document.getElementById('content-area').classList.add('active');
+            
+            document.getElementById('current-app-title').innerText = appName;
+
+            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
+            document.getElementById(appId).style.display = 'block';
+        }
+
+        function goHome() {
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('app-header').classList.remove('active');
+            document.getElementById('content-area').classList.remove('active');
+
+            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
+        }
+    </script>
+
+</body>
+</html>
