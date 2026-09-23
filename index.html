@@ -3,86 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Alur Layanan Terpadu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Portal Layanan Terpadu - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         
-        /* Latar belakang abu-abu terang bersih khas poster */
         body { 
-            background: #eef2f6; 
-            color: #1e293b; 
+            background: #f8fafc; 
+            color: #0f172a; 
             height: 100vh; 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
         }
         
-        /* Header Wadah Saat Aplikasi Dibuka */
+        /* Halaman Login */
+        #login-view {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            background: #f8fafc; padding: 20px;
+        }
+        #login-view.hidden { display: none; }
+        
+        .login-card {
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 24px;
+            padding: 40px; width: 100%; max-width: 400px; text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .login-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .login-title { font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .login-desc { font-size: 0.9rem; color: #64748b; margin-bottom: 24px; }
+        
+        .login-input {
+            width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 10px;
+            font-size: 1rem; margin-bottom: 16px; outline: none; transition: border-color 0.2s;
+        }
+        .login-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        
+        .login-btn {
+            width: 100%; background: #0f172a; color: white; border: none; padding: 12px;
+            border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
+        }
+        .login-btn:hover { background: #2563eb; }
+        .error-msg { color: #dc2626; font-size: 0.85rem; margin-top: 10px; display: none; }
+
+        /* Header Atas Saat Aplikasi Dibuka */
         header { 
-            background: #b91c1c; color: white; padding: 14px 24px; 
-            display: none; justify-content: space-between; align-items: center; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 20;
+            background: #ffffff; border-bottom: 1px solid #e2e8f0;
+            padding: 16px 30px; display: none; justify-content: space-between; align-items: center; 
+            z-index: 20; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
         header.active { display: flex; }
-        .back-btn { 
-            background: #ffffff; color: #b91c1c; border: none; padding: 8px 16px; 
-            border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 700; 
-            display: flex; align-items: center; gap: 6px; transition: 0.2s; 
+        
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .nav-btn { 
+            background: #0f172a; color: white; border: none; padding: 9px 16px; 
+            border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; 
+            display: flex; align-items: center; gap: 6px; transition: background 0.2s; 
         }
-        .back-btn:hover { background: #f8fafc; }
-        .header-title { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px; }
+        .nav-btn:hover { background: #2563eb; }
+        .logout-btn { background: #ef4444; }
+        .logout-btn:hover { background: #dc2626; }
+        
+        .header-title { font-size: 1.05rem; font-weight: 700; color: #0f172a; }
 
-        /* Halaman Utama Wadah (Gaya Infografis) */
+        /* Halaman Utama / Menu Pilihan */
         #home-view { 
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            padding: 30px; text-align: center; overflow-y: auto; 
+            flex: 1; display: none; flex-direction: column; justify-content: center; align-items: center; 
+            padding: 40px 20px; text-align: center; overflow-y: auto; 
         }
-        #home-view.hidden { display: none; }
+        #home-view.active { display: flex; }
         
-        /* Judul Merah Khas Poster */
-        .poster-title-container {
-            margin-bottom: 40px;
-            border-bottom: 3px solid #b91c1c;
-            padding-bottom: 15px;
-            max-width: 700px;
-            width: 100%;
+        .hero-tag {
+            background: #eff6ff; color: #2563eb; padding: 6px 16px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 16px; border: 1px solid #dbeafe;
         }
-        .main-heading { font-size: 1.8rem; font-weight: 800; color: #b91c1c; text-transform: uppercase; letter-spacing: 1px; }
-        .sub-heading { font-size: 0.95rem; color: #475569; margin-top: 6px; font-weight: 600; }
+        .main-heading { font-size: 2.3rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
+        .sub-heading { font-size: 1rem; color: #64748b; margin-bottom: 45px; max-width: 550px; }
 
-        /* Container Langkah-langkah */
-        .steps-container { 
-            display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; max-width: 850px; width: 100%; 
-        }
+        /* Container Kartu Menu */
+        .steps-container { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; max-width: 900px; width: 100%; }
         
-        /* Kartu Langkah Mengikuti Gaya Poster */
         .step-card { 
-            background: white; border: 2px solid #cbd5e1; border-radius: 12px; 
-            padding: 35px 25px 25px 25px; width: 300px; text-align: center; cursor: pointer; 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
-            transition: all 0.3s ease; position: relative; 
+            background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; 
+            padding: 35px 30px; width: 330px; text-align: left; cursor: pointer; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03); transition: all 0.3s ease; 
         }
+        .step-card:hover { transform: translateY(-6px); border-color: #2563eb; box-shadow: 0 20px 35px -10px rgba(37, 99, 235, 0.12); }
         
-        /* Lingkaran / Kotak Nomor Merah di Atas Kartu */
-        .step-number {
-            position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
-            background: #b91c1c; color: white; width: 44px; height: 44px;
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.4);
-        }
+        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .step-icon-box { width: 55px; height: 55px; border-radius: 14px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .step-arrow { color: #94a3b8; font-size: 1.2rem; transition: transform 0.2s; }
+        .step-card:hover .step-arrow { transform: translateX(4px); color: #2563eb; }
 
-        .step-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 20px 25px -5px rgba(185, 28, 28, 0.15); 
-            border-color: #b91c1c; 
-        }
-        
-        .step-icon { font-size: 2.8rem; margin-top: 10px; margin-bottom: 15px; display: block; }
-        .step-title { font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
-        .step-desc { font-size: 0.88rem; color: #475569; line-height: 1.5; font-weight: 500; }
+        .step-title { font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .step-desc { font-size: 0.9rem; color: #64748b; line-height: 1.5; }
 
-        /* Area Wadah iframe untuk Menampung Aplikasi */
+        /* Area Wadah iframe */
         .content-area { flex: 1; position: relative; display: none; background: #ffffff; }
         .content-area.active { display: block; }
         iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
@@ -90,50 +107,100 @@
 </head>
 <body>
 
-    <!-- Header Wadah Saat Salah Satu Aplikasi Dibuka -->
+    <!-- 1. TAMPILAN HALAMAN LOGIN -->
+    <div id="login-view">
+        <div class="login-card">
+            <span class="login-icon">🔐</span>
+            <h2 class="login-title">Autentikasi Portal</h2>
+            <p class="login-desc">Masukkan kata sandi untuk mengakses sistem.</p>
+            <input type="password" id="password-input" class="login-input" placeholder="Masukkan Kata Sandi...">
+            <button class="login-btn" onclick="handleLogin()">Masuk Sistem</button>
+            <div id="error-msg" class="error-msg">Kata sandi salah! Silakan coba lagi.</div>
+        </div>
+    </div>
+
+    <!-- Header Wadah Saat Menu atau Aplikasi Dibuka -->
     <header id="app-header">
-        <button class="back-btn" onclick="goHome()">← KEMBALI KE MENU</button>
-        <div class="header-title" id="current-app-title">PORTAL LAYANAN</div>
-        <div style="width: 140px;"></div>
+        <div class="header-actions">
+            <button id="back-home-btn" class="nav-btn" onclick="goHome()" style="display:none;">← Menu Utama</button>
+        </div>
+        <div class="header-title" id="current-app-title">Portal Layanan Terpadu</div>
+        <button class="nav-btn logout-btn" onclick="handleLogout()">Keluar (Logout)</button>
     </header>
 
-    <!-- Halaman Utama Wadah (Tampilan Infografis) -->
+    <!-- 2. TAMPILAN MENU UTAMA (DASHBOARD) -->
     <div id="home-view">
-        <div class="poster-title-container">
-            <h1 class="main-heading">PORTAL LAYANAN MUTASI & PPPK</h1>
-            <p class="sub-heading">Silakan pilih tahapan modul di bawah ini untuk mengakses sistem</p>
-        </div>
+        <div class="hero-tag">Dashboard Terpadu</div>
+        <h1 class="main-heading">Portal Layanan Mutasi & PPPK</h1>
+        <p class="sub-heading">Pilih modul di bawah ini untuk masuk ke sistem aplikasi yang diinginkan.</p>
         
         <div class="steps-container">
-            <!-- Kartu 1: Mutasi OSDM -->
             <div class="step-card" onclick="openApp('app1', 'Modul Mutasi OSDM')">
-                <div class="step-number">1</div>
-                <span class="step-icon">📂</span>
+                <div class="card-top">
+                    <div class="step-icon-box">📂</div>
+                    <div class="step-arrow">→</div>
+                </div>
                 <div class="step-title">Mutasi OSDM</div>
-                <div class="step-desc">Akses sistem pengelolaan dan administrasi mutasi pegawai secara terpadu.</div>
+                <div class="step-desc">Kelola sistem administrasi dan pemrosesan mutasi pegawai secara terpadu.</div>
             </div>
 
-            <!-- Kartu 2: PPPK PW -->
             <div class="step-card" onclick="openApp('app2', 'Modul PPPK PW')">
-                <div class="step-number">2</div>
-                <span class="step-icon">👥</span>
+                <div class="card-top">
+                    <div class="step-icon-box">👥</div>
+                    <div class="step-arrow">→</div>
+                </div>
                 <div class="step-title">PPPK PW</div>
-                <div class="step-desc">Akses sistem penataan dan pengelolaan data PPPK wilayah kerja terkait.</div>
+                <div class="step-desc">Akses sistem penataan serta pengelolaan data PPPK wilayah kerja terkait.</div>
             </div>
         </div>
     </div>
 
-    <!-- Area Wadah Pemuat Iframe dengan URL Anda -->
+    <!-- 3. AREA KONTEN IFRAME -->
     <div class="content-area" id="content-area">
         <iframe id="app1" src="https://rumahintegritas.github.io/mutasiosdm/"></iframe>
         <iframe id="app2" src="https://rumahintegritas.github.io/pppkpw2627/" style="display:none;"></iframe>
     </div>
 
     <script>
+        const CORRECT_PWD = "osdm321";
+
+        function handleLogin() {
+            const inputVal = document.getElementById('password-input').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (inputVal === CORRECT_PWD) {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('app-header').classList.add('active');
+                document.getElementById('home-view').classList.add('active');
+                errorMsg.style.display = 'none';
+                document.getElementById('password-input').value = '';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // Shortcut tekan tombol Enter untuk login
+        document.getElementById('password-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { handleLogin(); }
+        });
+
+        function handleLogout() {
+            // Sembunyikan semua dan kembali ke halaman login
+            document.getElementById('app-header').classList.remove('active');
+            document.getElementById('home-view').classList.remove('active');
+            document.getElementById('content-area').classList.remove('active');
+            document.getElementById('login-view').classList.remove('hidden');
+            
+            // Sembunyikan iframe
+            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
+            document.getElementById('back-home-btn').style.display = 'none';
+            document.getElementById('current-app-title').innerText = "Portal Layanan Terpadu";
+        }
+
         function openApp(appId, appName) {
-            document.getElementById('home-view').classList.add('hidden');
-            document.getElementById('app-header').classList.add('active');
+            document.getElementById('home-view').classList.remove('active');
             document.getElementById('content-area').classList.add('active');
+            document.getElementById('back-home-btn').style.display = 'block';
             
             document.getElementById('current-app-title').innerText = appName;
 
@@ -142,9 +209,10 @@
         }
 
         function goHome() {
-            document.getElementById('home-view').classList.remove('hidden');
-            document.getElementById('app-header').classList.remove('active');
             document.getElementById('content-area').classList.remove('active');
+            document.getElementById('home-view').classList.add('active');
+            document.getElementById('back-home-btn').style.display = 'none';
+            document.getElementById('current-app-title').innerText = "Portal Layanan Terpadu";
 
             document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
         }
