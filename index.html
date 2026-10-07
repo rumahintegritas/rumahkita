@@ -350,7 +350,7 @@
 
             const storageKey = 'akses_count_' + inputVal;
             let currentCount = parseInt(localStorage.getItem(storageKey)) || 0;
-            if (currentCount >= 20) {
+            if (currentCount >= 50) {
                 errorMsg.innerHTML = "<strong>Akses Dibatasi!</strong> Anda sudah mengakses berkali-kali. Hubungi admin.";
                 errorMsg.style.display = 'block'; return;
             }
