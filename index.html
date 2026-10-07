@@ -3,358 +3,667 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Layanan Terpadu - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Portal Kredensial & Helpdesk Terpadu</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --bg-color: #f1f5f9; --card-bg: #ffffff; --text-color: #1e293b; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh; }
+        header { background-color: var(--primary); color: white; padding: 20px 24px; text-align: center; font-weight: bold; font-size: 1.3rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
-        body { 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #090d16 100%);
-            color: #f8fafc; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            position: relative;
-        }
+        .marquee-container { background-color: #fef3c7; border-bottom: 1px solid #fde68a; overflow: hidden; white-space: nowrap; padding: 10px 0; }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; font-size: 1rem; font-weight: 600; color: #b45309; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 35px 35px;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Ornamen Cahaya Ambient Bergerak di Background */
-        .ambient-glow-1, .ambient-glow-2 {
-            position: absolute;
-            width: 450px; height: 450px;
-            border-radius: 50%;
-            filter: blur(120px);
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.35;
-            animation: glowMove 10s ease-in-out infinite alternate;
-        }
-        .ambient-glow-1 { top: -10%; left: -5%; background: rgba(37, 99, 235, 0.4); }
-        .ambient-glow-2 { bottom: -10%; right: -5%; background: rgba(14, 165, 233, 0.3); animation-delay: 5s; }
-
-        @keyframes glowMove {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, 30px) scale(1.15); }
-        }
+        .main-wrapper { display: flex; justify-content: center; align-items: flex-start; padding: 20px; flex: 1; margin-top: 15px; }
         
-        /* Halaman Login */
-        #login-view {
-            flex: 1; display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, #090d16 0%, #1e293b 100%); 
-            padding: 20px; z-index: 10;
-        }
-        #login-view.hidden { display: none; }
+        .container { width: 100%; max-width: 650px; background: var(--card-bg); padding: 35px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; }
+        .container.admin-wide { max-width: 1100px; } 
         
-        .login-card {
-            background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px; padding: 40px; width: 100%; max-width: 400px; text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); color: #f8fafc;
-            position: relative; z-index: 2;
-        }
-        .login-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
-        .login-title { font-size: 1.4rem; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
-        .login-desc { font-size: 0.9rem; color: #94a3b8; margin-bottom: 24px; }
+        h2 { margin-top: 0; color: var(--primary); text-align: center; font-size: 1.7rem; margin-bottom: 8px; }
+        p.subtitle { text-align: center; color: #64748b; font-size: 1rem; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 1rem; }
+        input[type="text"], textarea { width: 100%; padding: 12px 15px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1.05rem; font-family: inherit; }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        input[readonly] { background-color: #f1f5f9; color: #475569; cursor: not-allowed; font-weight: 600; }
+        button.btn-main { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
+        button.btn-main:hover { background-color: #1e40af; }
         
-        .login-input {
-            width: 100%; padding: 12px 16px; background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
-            font-size: 1rem; color: #ffffff; margin-bottom: 16px; outline: none; transition: border-color 0.2s;
-        }
-        .login-input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+        .error-msg { color: #dc2626; font-size: 0.9rem; margin-top: 15px; text-align: center; display: none; background: #fee2e2; padding: 12px; border-radius: 6px; }
+        .loading { display: none; text-align: center; font-size: 0.95rem; color: #64748b; margin-top: 15px; font-weight:bold; }
         
-        .login-btn {
-            width: 100%; background: #3b82f6; color: white; border: none; padding: 12px;
-            border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
-        }
-        .login-btn:hover { background: #2563eb; }
-        .error-msg { color: #f87171; font-size: 0.85rem; margin-top: 10px; display: none; }
-
-        /* Header Atas Saat Aplikasi Dibuka */
-        header { 
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 14px 30px; display: none; justify-content: space-between; align-items: center; 
-            z-index: 20; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-        }
-        header.active { display: flex; }
+        #dashboard-section, #monitoring-section { display: none; }
         
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .nav-btn { 
-            background: rgba(255, 255, 255, 0.08); color: white; border: none; padding: 8px 14px; 
-            border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; 
-            display: flex; align-items: center; gap: 6px; transition: all 0.2s; 
-        }
-        .nav-btn:hover { background: rgba(255, 255, 255, 0.15); }
-        .logout-btn { background: #dc2626 !important; }
-        .logout-btn:hover { background: #b91c1c !important; }
+        .user-profile-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .tab-container { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px 5px; background: none; border: none; font-weight: 600; font-size: 0.95rem; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); margin-bottom: -2px; background-color: #f8fafc; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         
-        .admin-badge {
-            display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #cbd5e1; font-weight: 500;
-        }
-        .status-dot { width: 8px; height: 8px; background-color: #34d399; border-radius: 50%; display: inline-block; }
-        .header-title { font-size: 1rem; font-weight: 700; color: #ffffff; }
-
-        /* Halaman Utama / Menu Pilihan (Dinaikkan agar tidak terlalu mepet ke bawah) */
-        #home-view { 
-            flex: 1; display: none; flex-direction: column; justify-content: flex-start; align-items: center; 
-            padding: 40px 20px 20px 20px; text-align: center; overflow-y: auto; z-index: 5;
-        }
-        #home-view.active { display: flex; }
+        .info-card { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 15px; }
+        .info-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+        .credential-row { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 6px; margin-top: 6px; }
+        .credential-value { font-family: monospace; font-size: 1.1rem; font-weight: bold; color: #0f172a; word-break: break-all; }
+        .btn-copy { background-color: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer; font-weight: 600; }
+        .btn-logout { background-color: #64748b; color: white; width: auto; margin: 0; font-size: 0.95rem; padding: 8px 15px;}
         
-        .platform-title {
-            font-size: 2.3rem; font-weight: 800; color: #ffffff; margin-bottom: 8px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.4); letter-spacing: -0.5px;
-        }
-        .platform-subtitle {
-            background: rgba(255, 255, 255, 0.07); padding: 6px 20px; border-radius: 20px;
-            font-size: 0.95rem; font-weight: 600; margin-bottom: 35px; display: inline-block;
-            backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #94a3b8;
-        }
+        .tiket-card { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 6px; margin-bottom: 15px; }
+        .tiket-status { display: inline-block; padding: 5px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 8px; }
+        
+        .admin-table-wrapper { overflow-x: auto; margin-top: 20px; border-radius: 6px; border: 1px solid #cbd5e1; }
+        table.admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 900px; }
+        table.admin-table th { background-color: #f1f5f9; padding: 12px; text-align: left; border-bottom: 2px solid #cbd5e1; color: #0f172a; }
+        table.admin-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        table.admin-table tr:hover { background-color: #f8fafc; }
+        .status-select { padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85rem; width: 100%; margin-bottom: 8px; background: white; font-weight:bold; }
+        .petugas-input { padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85rem; width: 100%; box-sizing: border-box; margin-bottom: 8px; background: #f8fafc; }
+        .balasan-input { padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85rem; width: 100%; box-sizing: border-box; resize: vertical; height: 70px; font-family: inherit; }
+        .btn-simpan-status { background-color: #16a34a; color: white; border: none; padding: 10px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold; width: 100%; margin-top: 6px;}
+        
+        .rekap-box { background-color: #3b82f6; color: white; padding: 15px 20px; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; min-width: 90px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .rekap-box:hover { transform: scale(1.05); }
+        .rekap-box.all-data { background-color: #1e3a8a; }
 
-        /* Container Tombol Melingkar Beranimasi (4 Kolom) */
-        .circle-menu-container {
-            display: flex; gap: 25px; justify-content: center; align-items: center; flex-wrap: wrap;
-            max-width: 1100px; width: 100%; margin-bottom: 25px;
-        }
+        .pagination-panel { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+        .page-btn { padding: 8px 14px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: bold; background: white; color: #1e293b; }
+        .page-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .page-btn:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
 
-        .circle-card {
-            width: 200px; height: 200px; background: rgba(30, 41, 59, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 50%; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; cursor: pointer; text-align: center; padding: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); color: #f8fafc;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative; border: 2px solid rgba(255, 255, 255, 0.12);
-            animation: floatAnim 4s ease-in-out infinite;
-        }
-
-        @keyframes floatAnim {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .circle-card:nth-child(1) { animation-delay: 0s; }
-        .circle-card:nth-child(2) { animation-delay: 1s; }
-        .circle-card:nth-child(3) { animation-delay: 2s; }
-        .circle-card:nth-child(4) { animation-delay: 3s; }
-
-        .circle-card:hover {
-            transform: scale(1.08) translateY(-6px);
-            background: rgba(30, 41, 59, 1);
-            border-color: #38bdf8;
-            box-shadow: 0 30px 60px rgba(56, 189, 248, 0.25);
-        }
-
-        .circle-icon { font-size: 2.3rem; margin-bottom: 8px; }
-        .circle-title { font-size: 0.95rem; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
-        .circle-desc { font-size: 0.7rem; color: #94a3b8; line-height: 1.3; }
-
-        /* Footer Kecil di Bawah Beranda */
-        .portal-footer {
-            margin-top: auto; margin-bottom: 15px; font-size: 0.78rem; color: #64748b; letter-spacing: 0.5px;
-        }
-
-        /* Area Wadah iframe & Tampilan Coming Soon */
-        .content-area { flex: 1; position: relative; display: none; background: #0f172a; z-index: 5; }
-        .content-area.active { display: block; }
-        iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
-
-        .coming-soon-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            z-index: 10; text-align: center; padding: 20px;
-        }
-        .coming-soon-card {
-            background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 24px;
-            padding: 50px 40px; max-width: 500px; width: 100%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        .cs-icon-pulse {
-            font-size: 3.5rem; margin-bottom: 20px; display: inline-block;
-            animation: pulseAnim 2s infinite ease-in-out;
-        }
-        @keyframes pulseAnim {
-            0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 15px rgba(56,189,248,0.5)); }
-            100% { transform: scale(1); opacity: 0.9; }
-        }
-        .cs-title { font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 10px; }
-        .cs-desc { font-size: 0.95rem; color: #94a3b8; line-height: 1.5; margin-bottom: 30px; }
-        .cs-back-btn {
-            background: #3b82f6; color: white; border: none; padding: 12px 28px;
-            border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
-            transition: all 0.2s; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-        }
-        .cs-back-btn:hover { background: #2563eb; transform: translateY(-2px); }
+        footer { text-align: center; padding: 15px; font-size: 0.85rem; color: #64748b; }
     </style>
 </head>
 <body>
 
-    <!-- Ornamen Cahaya Background Bergerak -->
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
+    <header>Portal Kredensial & Pusat Bantuan PPPK GURU dan Tendik</header>
 
-    <!-- 1. TAMPILAN HALAMAN LOGIN -->
-    <div id="login-view">
-        <div class="login-card">
-            <span class="login-icon">🔐</span>
-            <h2 class="login-title">Autentikasi Portal</h2>
-            <p class="login-desc">Masukkan kata sandi untuk mengakses sistem.</p>
-            <input type="password" id="password-input" class="login-input" placeholder="Masukkan Kata Sandi...">
-            <button class="login-btn" onclick="handleLogin()">Masuk Sistem</button>
-            <div id="error-msg" class="error-msg">Kata sandi salah! Silakan coba lagi.</div>
+    <div class="marquee-container">
+        <div class="marquee-text">
+            Bila terdapat kendala silahkan buat tiket pelaporan kendala yang akan ditangani secara berkala oleh tim teknis kami. Cek status tiket Anda dengan masuk menggunakan NIP atau NIK.
         </div>
     </div>
 
-    <!-- Header Wadah Saat Menu atau Aplikasi Dibuka -->
-    <header id="app-header">
-        <div class="header-left">
-            <button id="back-home-btn" class="nav-btn" onclick="goHome()" style="display:none;">← Menu Utama</button>
-            <div class="admin-badge">
-                <span class="status-dot"></span> Halo, Admin
-            </div>
-        </div>
-        <div class="header-title" id="current-app-title">Portal Layanan Terpadu</div>
-        <button class="nav-btn logout-btn" onclick="handleLogout()">Keluar (Logout)</button>
-    </header>
+    <div class="main-wrapper">
+        <div class="container" id="mainContainer">
+            
+            <!-- SECTION 1: LOGIN PEGAWAI & FORM KENDALA -->
+            <div id="login-section">
+                <h2>Verifikasi Data Pegawai</h2>
+                <p class="subtitle">Masukkan NIP atau NIK Anda untuk melihat akun & status tiket.</p>
+                
+                <div class="form-group">
+                    <input type="text" id="searchInput" placeholder="Masukkan NIP atau NIK Anda di sini...">
+                </div>
 
-    <!-- 2. TAMPILAN MENU UTAMA (4 MODUL MELAYANG) -->
-    <div id="home-view">
-        <h1 class="platform-title">Portal Layanan Mutasi</h1>
-        <div class="platform-subtitle">Dashboard Manajemen Tim Mutasi</div>
-        
-        <div class="circle-menu-container">
-            <!-- Kartu 1: Penugasan ASN -->
-            <div class="circle-card" onclick="openApp('app1', 'Modul Penugasan ASN')">
-                <div class="circle-icon">📂</div>
-                <div class="circle-title">Penugasan ASN</div>
-                <div class="circle-desc">Kelola administrasi, penataan & penugasan pegawai.</div>
+                <button class="btn-main" onclick="handleLogin()">Masuk & Lihat Akun</button>
+                <button onclick="location.reload()" style="width: 100%; background-color: #64748b; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px;">Muat Ulang Halaman</button>
+                
+                <div id="loadingMsg" class="loading">Memuat data dari server...</div>
+                <div id="errorMsg" class="error-msg"></div>
+
+                <div style="margin-top: 25px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                    <button onclick="toggleBantuanForm()" style="background: none; border: none; color: #2563eb; font-size: 1.05rem; font-weight: bold; cursor: pointer; text-decoration: underline;">Mengalami Kendala? Buat Tiket Bantuan</button>
+                </div>
+
+                <!-- FORMULIR PENGADUAN KENDALA -->
+                <div id="bantuanFormPanel" style="display: none; margin-top: 20px; background: #f8fafc; border: 1px solid #cbd5e1; padding: 20px; border-radius: 8px; text-align: left;">
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #1e3a8a; margin-bottom: 15px; text-align: center;">Formulir Laporan Kendala</div>
+                    
+                    <div class="form-group">
+                        <label>NIP / NIK <span style="font-size:0.8rem; color:#64748b; font-weight:normal;">(Ketik NIP/NIK lalu klik di luar kotak)</span></label>
+                        <input type="text" id="kendalaNip" placeholder="Masukkan NIP atau NIK...">
+                        <div id="loadingPegawaiMsg" style="font-size:0.85rem; color:#2563eb; display:none; margin-top:6px;">Mencari data pegawai...</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="kendalaNama" placeholder="Otomatis terisi dari server..." readonly>
+                    </div>
+                    <!-- Pembaruan: Menggunakan Email Kedinasan -->
+                    <div class="form-group">
+                        <label>Email Kedinasan</label>
+                        <input type="text" id="kendalaEmail" placeholder="Otomatis terisi dari server..." readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor HP / WA</label>
+                        <input type="text" id="kendalaHp" placeholder="Contoh: 08123456789">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Kategori Kendala (Bisa pilih lebih dari satu)</label>
+                        <div style="background: white; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; font-size: 0.95rem;">
+                            <label style="font-weight: normal; margin-bottom: 8px; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="AKTIVASI ASN DIGITAL/ MFA"> AKTIVASI ASN DIGITAL/ MFA
+                            </label>
+                            <label style="font-weight: normal; margin-bottom: 8px; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="AKTIVASI EMAIL DINAS"> AKTIVASI EMAIL DINAS
+                            </label>
+                            <label style="font-weight: normal; margin-bottom: 8px; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="AKTIVASI BSRE"> AKTIVASI BSRE
+                            </label>
+                            <label style="font-weight: normal; margin-bottom: 8px; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="AKTIVASI SIKD"> AKTIVASI SIKD
+                            </label>
+                            <label style="font-weight: normal; margin-bottom: 8px; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="PENANDATANGANAN PERJANJIAN KERJA"> PENANDATANGANAN PERJANJIAN KERJA
+                            </label>
+                            <label style="font-weight: normal; margin-bottom: 8px; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="PEMBUBUHAN E METERAI"> PEMBUBUHAN E METERAI
+                            </label>
+                            <label style="font-weight: normal; margin-bottom: 0; display: block; cursor: pointer;">
+                                <input type="checkbox" name="kategoriPilihan" value="LAINNYA"> LAINNYA
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Uraian Detail Kendala</label>
+                        <textarea id="kendalaUraian" placeholder="Ceritakan detail masalah yang Anda alami..." style="height: 100px; resize: vertical;"></textarea>
+                    </div>
+
+                    <button onclick="kirimKendalaKeSpreadsheet()" style="width: 100%; background-color: #16a34a; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 1.05rem; font-weight: 600; cursor: pointer;">Kirim Tiket Laporan</button>
+                </div>
+
+                <!-- MENU KHUSUS ADMIN -->
+                <div style="margin-top: 30px; text-align: center; padding-top: 20px;">
+                    <button onclick="cekPasswordAdmin()" style="background-color: #475569; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">Buka Menu Khusus Admin</button>
+                    
+                    <div id="adminResetPanel" style="display: none; margin-top: 15px; background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px dashed #94a3b8;">
+                        <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">Mode Administrator Aktif</div>
+                        <button onclick="adminResetAkses()" style="background-color: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px;">1. Reset Limit NIP/NIK (Ketikan di atas)</button>
+                        <button onclick="bukaDashboardMonitoring()" style="background-color: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; width: 100%;">2. Buka Monitoring Ticketing</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Kartu 2: Perpanjangan PPPK PW -->
-            <div class="circle-card" onclick="openApp('app2', 'Modul Perpanjangan PPPK PW')">
-                <div class="circle-icon">👥</div>
-                <div class="circle-title">Perpanjangan PPPK PW</div>
-                <div class="circle-desc">Kelola penataan data perpanjangan PPPK.</div>
+            <!-- SECTION 2: DASHBOARD KREDENSIAL PEGAWAI -->
+            <div id="dashboard-section">
+                <h2>Portal Pribadi Anda</h2>
+                <div class="user-profile-box">
+                    <div>
+                        <div style="font-size: 0.85rem; color: #64748b; font-weight: bold;">PEGAWAI AKTIF</div>
+                        <div id="resNama" style="font-weight: bold; font-size: 1.1rem; margin-top: 4px;">-</div>
+                        <!-- Pembaruan: Menampilkan NIP dan NIK sekaligus -->
+                        <div id="resIden" style="font-size: 0.9rem; color: #475569; margin-top: 4px; line-height: 1.5;">-</div>
+                        <div id="resUnitKerja" style="font-size: 0.9rem; color: #0284c7; font-weight: bold; margin-top: 4px;">-</div>
+                    </div>
+                    <button class="btn-copy btn-logout" onclick="kembaliKeHome()">Keluar</button>
+                </div>
+
+                <div class="tab-container">
+                    <button class="tab-btn active" onclick="switchTab('email', event)">Email Dinas</button>
+                    <button class="tab-btn" onclick="switchTab('sikd', event)">Akun SIKD</button>
+                    <button class="tab-btn" onclick="switchTab('tiket', event)">Status Tiket Saya</button>
+                </div>
+
+                <div id="tab-email" class="tab-content active">
+                    <div class="info-card">
+                        <div class="info-label">Username Email Kedinasan</div>
+                        <div class="credential-row">
+                            <span id="resUserEmail" class="credential-value">-</span>
+                            <button class="btn-copy" onclick="copyText('resUserEmail')">Salin</button>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Alamat Email</div>
+                        <div class="credential-row">
+                            <span id="resEmail" class="credential-value">-</span>
+                            <button class="btn-copy" onclick="copyText('resEmail')">Salin</button>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Password Email</div>
+                        <div class="credential-row">
+                            <span id="resPwdEmail" class="credential-value">-</span>
+                            <button class="btn-copy" onclick="copyText('resPwdEmail')">Salin</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab-sikd" class="tab-content">
+                    <div class="info-card">
+                        <div class="info-label">Username SIKD</div>
+                        <div class="credential-row">
+                            <span id="resUserSikd" class="credential-value">-</span>
+                            <button class="btn-copy" onclick="copyText('resUserSikd')">Salin</button>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Password SIKD</div>
+                        <div class="credential-row">
+                            <span id="resPwdSikd" class="credential-value">-</span>
+                            <button class="btn-copy" onclick="copyText('resPwdSikd')">Salin</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-tiket" class="tab-content">
+                    <p style="font-size: 0.9rem; color: #64748b; margin-top: 0;">Daftar pengaduan kendala yang pernah Anda buat:</p>
+                    <div id="listTiketUserContainer"></div>
+                </div>
             </div>
 
-            <!-- Kartu 3: Mutasi Internal -->
-<div class="circle-card" onclick="openComingSoon('Mutasi Internal')">
-    <div class="circle-icon" style="font-size: 2.3rem; margin-bottom: 8px;">🏠</div>
-    <div class="circle-title">Mutasi Internal</div>
-    <div class="circle-desc">Pengelolaan perpindahan pegawai dalam instansi.</div>
-</div>
-            <!-- Kartu 4: Mutasi Antar Instansi (Coming Soon) -->
-            <div class="circle-card" onclick="openComingSoon('Mutasi Antar Instansi')">
-                <div class="circle-icon">🏛️</div>
-                <div class="circle-title">Mutasi Antar Instansi</div>
-                <div class="circle-desc">Administrasi perpindahan antar instansi pemerintah.</div>
-            </div>
-        </div>
+            <!-- SECTION 3: DASHBOARD MONITORING ADMIN -->
+            <div id="monitoring-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="margin: 0;">Monitoring Ticketing Bantuan</h2>
+                    <button onclick="kembaliKeHome()" style="background-color: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.95rem;">Tutup Dashboard</button>
+                </div>
+                <p id="statusLoadMonitoring" style="font-size: 0.95rem; color: #2563eb; font-weight: bold; margin-bottom: 20px;">Memuat data dari Google Sheet...</p>
+                
+                <div id="rekapKendalaPanel" style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;"></div>
+                
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">No</th>
+                                <!-- Update nama header -->
+                                <th style="width: 220px;">Pelapor (NIP/NIK, Nama, & Email)</th>
+                                <th>Kategori & Detail Kendala</th>
+                                <th style="width: 280px;">Status, Petugas, & Solusi</th>
+                                <th style="width: 120px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelKendalaBody"></tbody>
+                    </table>
+                </div>
 
-        <div class="portal-footer">
-            &copy; 2026 Portal Layanan Terpadu &bull; Subtim Mutasi OSDM
+                <div id="paginationPanel" class="pagination-panel"></div>
+            </div>
         </div>
     </div>
 
-    <!-- 3. AREA KONTEN IFRAME & TAMPILAN COMING SOON -->
-    <div class="content-area" id="content-area">
-        <iframe id="app1" src="https://rumahintegritas.github.io/mutasiosdm/"></iframe>
-        <iframe id="app2" src="https://rumahintegritas.github.io/pppkpw2627/" style="display:none;"></iframe>
-
-        <div id="coming-soon-view" class="coming-soon-container" style="display:none;">
-            <div class="coming-soon-card">
-                <span class="cs-icon-pulse">⏳</span>
-                <h2 class="cs-title" id="cs-module-title">Modul Segera Hadir</h2>
-                <p class="cs-desc">Modul ini saat ini sedang dalam tahap pengembangan intensif (Coming Soon). Nantikan pembaruan sistem berikutnya untuk fitur ini.</p>
-                <button class="cs-back-btn" onclick="goHome()">← Kembali ke Menu Utama</button>
-            </div>
-        </div>
-    </div>
+    <footer>&copy; 2026 Tim Kerja Mutasi OSDM.</footer>
 
     <script>
-        const CORRECT_PWD = "osdm321";
+        // ==========================================
+        // WAJIB GANTI URL DI BAWAH INI DENGAN URL WEB APP ANDA YANG BARU HASIL DEPLOY ULANG
+        const SCRIPT_URL = "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_YANG_BARU";
+        // ==========================================
 
-        function handleLogin() {
-            const inputVal = document.getElementById('password-input').value;
-            const errorMsg = document.getElementById('error-msg');
+        function kembaliKeHome() {
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('monitoring-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('mainContainer').classList.remove('admin-wide');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
 
-            if (inputVal === CORRECT_PWD) {
-                document.getElementById('login-view').classList.add('hidden');
-                document.getElementById('app-header').classList.add('active');
-                document.getElementById('home-view').classList.add('active');
-                errorMsg.style.display = 'none';
-                document.getElementById('password-input').value = '';
+        function copyText(elementId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => alert('Berhasil disalin!'));
+        }
+
+        function switchTab(tabName, event) {
+            document.getElementById('tab-email').classList.remove('active');
+            document.getElementById('tab-sikd').classList.remove('active');
+            document.getElementById('tab-tiket').classList.remove('active');
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            if (event) event.currentTarget.classList.add('active');
+        }
+
+        function toggleBantuanForm() {
+            const panel = document.getElementById('bantuanFormPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // --- FETCH OTOMATIS: AUTO-FILL NAMA & EMAIL SAAT KETIK NIP/NIK ---
+        document.getElementById('kendalaNip').addEventListener('blur', function() {
+            const idInput = this.value.trim();
+            const msgBox = document.getElementById('loadingPegawaiMsg');
+            if(idInput !== "") {
+                msgBox.style.display = 'block';
+                fetch(`${SCRIPT_URL}?action=getPegawai&id=${encodeURIComponent(idInput)}`)
+                .then(res => res.json())
+                .then(data => {
+                    msgBox.style.display = 'none';
+                    if(data.status === "success") {
+                        document.getElementById('kendalaNama').value = data.nama;
+                        document.getElementById('kendalaEmail').value = data.email || "-"; 
+                    } else {
+                        document.getElementById('kendalaNama').value = "Data tidak ditemukan";
+                        document.getElementById('kendalaEmail').value = "-"; 
+                    }
+                }).catch(err => {
+                    msgBox.style.display = 'none';
+                    document.getElementById('kendalaNama').value = "Gagal memuat data";
+                });
             } else {
+                document.getElementById('kendalaNama').value = "";
+                document.getElementById('kendalaEmail').value = ""; 
+            }
+        });
+
+        // --- FETCH: LOGIN PEGAWAI & RENDER TIKET ---
+        function handleLogin() {
+            const inputVal = document.getElementById('searchInput').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const loadingMsg = document.getElementById('loadingMsg');
+
+            if (!inputVal) {
+                errorMsg.innerText = "Masukkan NIP atau NIK terlebih dahulu.";
+                errorMsg.style.display = 'block'; return;
+            }
+
+            const storageKey = 'akses_count_' + inputVal;
+            let currentCount = parseInt(localStorage.getItem(storageKey)) || 0;
+            if (currentCount >= 20) {
+                errorMsg.innerHTML = "<strong>Akses Dibatasi!</strong> Anda sudah mengakses berkali-kali. Hubungi admin.";
+                errorMsg.style.display = 'block'; return;
+            }
+
+            errorMsg.style.display = 'none';
+            loadingMsg.style.display = 'block';
+
+            fetch(`${SCRIPT_URL}?action=getPegawai&id=${encodeURIComponent(inputVal)}`)
+            .then(res => res.json())
+            .then(data => {
+                loadingMsg.style.display = 'none';
+                if(data.status === "success") {
+                    currentCount++;
+                    localStorage.setItem(storageKey, currentCount);
+                    
+                    document.getElementById('resNama').innerText = data.nama;
+                    // Pembaruan: NIP dan NIK tampil sekaligus
+                    document.getElementById('resIden').innerHTML = `NIP: ${data.nip}<br>NIK: ${data.nik}`;
+                    document.getElementById('resUnitKerja').innerText = `Unit: ${data.unitKerja}`;
+                    
+                    document.getElementById('resUserEmail').innerText = data.userEmail || "-";
+                    document.getElementById('resEmail').innerText = data.email || "-";
+                    document.getElementById('resPwdEmail').innerText = data.pwdEmail || "-";
+                    
+                    document.getElementById('resUserSikd').innerText = data.userSikd || "-";
+                    document.getElementById('resPwdSikd').innerText = data.pwdSikd || "-";
+                    
+                    renderTiketKhususUser(data.tiket);
+
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('dashboard-section').style.display = 'block';
+                    switchTab('email');
+                    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                } else {
+                    errorMsg.innerText = "NIP atau NIK tidak ditemukan dalam database.";
+                    errorMsg.style.display = 'block';
+                }
+            }).catch(err => {
+                loadingMsg.style.display = 'none';
+                errorMsg.innerText = "Terjadi kesalahan server. Pastikan URL Web App sudah benar.";
                 errorMsg.style.display = 'block';
+            });
+        }
+
+        function renderTiketKhususUser(tiketArr) {
+            let html = "";
+            if(!tiketArr || tiketArr.length === 0) {
+                html = `<div style="text-align:center; padding:20px; color:#94a3b8; font-size:0.95rem;">Belum ada riwayat pengaduan tiket.</div>`;
+            } else {
+                tiketArr.slice().reverse().forEach((tiket) => {
+                    let badgeColor = "#3b82f6"; 
+                    if (tiket.status === "Sedang Konfirmasi Lebih Lanjut") badgeColor = "#f59e0b";
+                    if (tiket.status === "Selesai") badgeColor = "#10b981";
+
+                    const petugasText = tiket.petugas ? `(Oleh: ${tiket.petugas})` : "";
+                    
+                    let balasanFinal = tiket.balasan || "<em>Belum ada balasan dari tim teknis.</em>";
+                    if (tiket.status === "Selesai") {
+                        balasanFinal += `<br><br><span style="color:#b45309; font-style:italic; font-size:0.85rem;">* Pesan Otomatis: Mohon Maaf atas kendala sebelumnya, tiket anda akan ditutup secara otomatis, silahkan buat kembali tiket pengaduan kendala bila menemukan kendala lainnya.</span>`;
+                    }
+
+                    let tglDisplay = tiket.tanggal;
+                    try { if(tglDisplay.includes('T')) { let d = new Date(tglDisplay); tglDisplay = d.toLocaleString('id-ID'); } } catch(e){}
+
+                    html += `
+                    <div class="tiket-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <span style="font-size: 0.85rem; color: #64748b; font-weight: bold;">Kategori: ${tiket.kategori}</span>
+                            <span style="font-size: 0.8rem; color: #94a3b8;">${tglDisplay}</span>
+                        </div>
+                        <div style="font-size: 1rem; color: #1e293b; margin-top: 8px; margin-bottom: 12px;">"${tiket.uraian}"</div>
+                        
+                        <span class="tiket-status" style="background-color: ${badgeColor};">${tiket.status}</span>
+                        
+                        <div style="background: #e0f2fe; padding: 12px; border-radius: 8px; border: 1px solid #bae6fd; margin-top: 10px;">
+                            <div style="font-size: 0.8rem; font-weight: bold; color: #0369a1; margin-bottom: 6px;">Balasan / Solusi Admin <span style="font-weight:normal; color:#0284c7;">${petugasText}</span>:</div>
+                            <div style="font-size: 0.95rem; color: #0c4a6e; white-space: pre-wrap;">${balasanFinal}</div>
+                        </div>
+                    </div>`;
+                });
+            }
+            document.getElementById('listTiketUserContainer').innerHTML = html;
+        }
+
+        // --- POST: KIRIM TIKET KE SHEET ---
+        function kirimKendalaKeSpreadsheet() {
+            const btn = event.target;
+            const payload = {
+                id: document.getElementById('kendalaNip').value.trim(),
+                nama: document.getElementById('kendalaNama').value.trim(),
+                emailKedinasan: document.getElementById('kendalaEmail').value.trim(),
+                hp: document.getElementById('kendalaHp').value.trim(),
+                uraian: document.getElementById('kendalaUraian').value.trim()
+            };
+
+            const checkboxKategori = document.querySelectorAll('input[name="kategoriPilihan"]:checked');
+            let kategoriArr = [];
+            checkboxKategori.forEach((cb) => { kategoriArr.push(cb.value); });
+            payload.kategori = kategoriArr.join(", ");
+
+            if (!payload.id || !payload.nama || !payload.hp || kategoriArr.length === 0 || !payload.uraian) {
+                alert("Semua kolom dan minimal satu kategori kendala wajib diisi!"); return;
+            }
+
+            btn.innerText = "Mengirim..."; btn.disabled = true;
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "addTicket", data: payload })
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert("Tiket Kendala berhasil dibuat! Silakan login kembali dengan NIP/NIK Anda untuk memantau status tiket.");
+                
+                document.getElementById('kendalaNip').value = '';
+                document.getElementById('kendalaNama').value = '';
+                document.getElementById('kendalaEmail').value = '';
+                document.getElementById('kendalaHp').value = '';
+                document.getElementById('kendalaUraian').value = '';
+                document.querySelectorAll('input[name="kategoriPilihan"]').forEach(cb => cb.checked = false);
+                document.getElementById('bantuanFormPanel').style.display = 'none';
+                
+                btn.innerText = "Kirim Tiket Laporan"; btn.disabled = false;
+            }).catch(err => {
+                alert("Terjadi kesalahan saat mengirim tiket.");
+                btn.innerText = "Kirim Tiket Laporan"; btn.disabled = false;
+            });
+        }
+
+        // --- FUNGSI ADMIN (PIN & RESET) ---
+        function cekPasswordAdmin() {
+            let pin = prompt("Masukkan PIN Administrator:");
+            if (pin === "mutasimutandis321") {
+                document.getElementById('adminResetPanel').style.display = 'block';
+            } else if (pin !== null) {
+                alert("Akses Ditolak! PIN Salah.");
+            }
+        }
+        function adminResetAkses() {
+            const inputVal = document.getElementById('searchInput').value.trim();
+            if (!inputVal) { alert("Masukkan NIP/NIK di kolom paling atas terlebih dahulu!"); return; }
+            localStorage.removeItem('akses_count_' + inputVal);
+            alert("Sukses! Batas akses NIP/NIK tersebut telah direset.");
+        }
+
+        // --- FETCH: DASHBOARD MONITORING ADMIN ---
+        let dataKendalaMaster = [];
+        let dataFiltered = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        function bukaDashboardMonitoring() {
+            document.getElementById('mainContainer').classList.add('admin-wide');
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('monitoring-section').style.display = 'block';
+            const statusMsg = document.getElementById('statusLoadMonitoring');
+            statusMsg.innerText = "Mengambil data tiket dari Google Sheet...";
+            
+            fetch(`${SCRIPT_URL}?action=getAllTickets`)
+            .then(res => res.json())
+            .then(res => {
+                if(res.status === "success") {
+                    dataKendalaMaster = res.data;
+                    renderRekapitulasi();
+                    filterKendala('Total To-Do'); 
+                } else {
+                    statusMsg.innerText = "Gagal memuat data dari Sheet.";
+                }
+            }).catch(err => {
+                statusMsg.innerText = "Koneksi ke Sheet terputus.";
+            });
+        }
+
+        function renderRekapitulasi() {
+            const tiketAktif = dataKendalaMaster.filter(item => item.status !== "Selesai");
+            const rekap = { "Total To-Do": tiketAktif.length };
+            
+            tiketAktif.forEach(item => {
+                const arrKategori = item.kategori.split(', ');
+                arrKategori.forEach(kat => { rekap[kat] = (rekap[kat] || 0) + 1; });
+            });
+
+            let html = "";
+            for (const [kategori, jumlah] of Object.entries(rekap)) {
+                const addClass = kategori === "Total To-Do" ? "all-data" : "";
+                html += `
+                <div class="rekap-box ${addClass}" onclick="filterKendala('${kategori}')">
+                    <span style="font-size: 1.6rem; font-weight: bold;">${jumlah}</span>
+                    <span style="font-size: 0.8rem; text-align: center; font-weight: 600;">${kategori}</span>
+                </div>`;
+            }
+            document.getElementById('rekapKendalaPanel').innerHTML = html;
+        }
+
+        function filterKendala(kategoriDipilih) {
+            document.getElementById('statusLoadMonitoring').innerText = `Menampilkan To-Do: ${kategoriDipilih}`;
+            const tiketAktif = dataKendalaMaster.filter(item => item.status !== "Selesai");
+
+            if (kategoriDipilih === "Total To-Do") {
+                dataFiltered = [...tiketAktif];
+            } else {
+                dataFiltered = tiketAktif.filter(item => item.kategori.includes(kategoriDipilih));
+            }
+            currentPage = 1; 
+            renderTabelKendala();
+        }
+
+        function renderTabelKendala() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const dataToDisplay = dataFiltered.slice(startIndex, endIndex);
+
+            let html = "";
+            if (dataToDisplay.length === 0) {
+                html = `<tr><td colspan="5" style="text-align: center; padding: 25px; font-size:1.05rem; color: #64748b;">Hore! Tidak ada tugas / kendala tertunda di filter ini.</td></tr>`;
+            } else {
+                dataToDisplay.forEach((item, index) => {
+                    let tglDisplay = item.waktu;
+                    try { if(tglDisplay.includes('T')) { let d = new Date(tglDisplay); tglDisplay = d.toLocaleString('id-ID'); } } catch(e){}
+
+                    let rawHp = String(item.hp).replace(/\D/g, ''); 
+                    let waNumber = rawHp;
+                    if (waNumber.startsWith('0')) {
+                        waNumber = '62' + waNumber.substring(1);
+                    } else if (waNumber.startsWith('8')) {
+                        waNumber = '62' + waNumber; 
+                    }
+
+                    html += `
+                    <tr>
+                        <td><b>#${item.row}</b><br><span style="font-size:0.75rem; color:gray;">${tglDisplay}</span></td>
+                        <td><b>${item.nip}</b><br>${item.nama}<br><a href="https://wa.me/${waNumber}" target="_blank" style="color: #16a34a; text-decoration: none; font-size: 0.85rem; font-weight: bold;">💬 Chat WA</a></td>
+                        <td><span style="background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem;">${item.kategori}</span><br><div style="margin-top:8px;">${item.uraian}</div></td>
+                        <td>
+                            <select id="status_${item.row}" class="status-select">
+                                <option value="Proses" ${item.status === 'Proses' ? 'selected' : ''}>Proses</option>
+                                <option value="Sedang Konfirmasi Lebih Lanjut" ${item.status === 'Sedang Konfirmasi Lebih Lanjut' ? 'selected' : ''}>Sedang Konfirmasi Lebih Lanjut</option>
+                                <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                            </select>
+                            <input type="text" id="petugas_${item.row}" value="${item.petugas}" placeholder="Nama Petugas..." class="petugas-input">
+                            <textarea id="balasan_${item.row}" placeholder="Ketik solusi atau balasan di sini..." class="balasan-input">${item.balasanAdmin}</textarea>
+                        </td>
+                        <td style="text-align: center; vertical-align: middle;">
+                            <button id="btn_${item.row}" onclick="simpanUpdate(${item.row})" class="btn-simpan-status">Simpan Update</button>
+                        </td>
+                    </tr>`;
+                });
+            }
+            document.getElementById('tabelKendalaBody').innerHTML = html;
+            renderPagination(); 
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(dataFiltered.length / rowsPerPage);
+            let html = "";
+            if (totalPages > 1) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&laquo; Prev</button>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    const activeClass = i === currentPage ? 'active' : '';
+                    html += `<button class="page-btn ${activeClass}" onclick="changePage(${i})">${i}</button>`;
+                }
+                html += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next &raquo;</button>`;
+            }
+            document.getElementById('paginationPanel').innerHTML = html;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(dataFiltered.length / rowsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderTabelKendala(); 
             }
         }
 
-        document.getElementById('password-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') { handleLogin(); }
-        });
-
-        function handleLogout() {
-            document.getElementById('app-header').classList.remove('active');
-            document.getElementById('home-view').classList.remove('active');
-            document.getElementById('content-area').classList.remove('active');
-            document.getElementById('login-view').classList.remove('hidden');
+        function simpanUpdate(row) {
+            const btn = document.getElementById(`btn_${row}`);
+            const st = document.getElementById(`status_${row}`).value;
+            const pt = document.getElementById(`petugas_${row}`).value;
+            const blsn = document.getElementById(`balasan_${row}`).value;
             
-            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
-            document.getElementById('coming-soon-view').style.display = 'none';
-            document.getElementById('back-home-btn').style.display = 'none';
-            document.getElementById('current-app-title').innerText = "Portal Layanan Terpadu";
-        }
+            btn.innerText = "Menyimpan...";
+            btn.style.backgroundColor = "#94a3b8";
 
-        function openApp(appId, appName) {
-            document.getElementById('home-view').classList.remove('active');
-            document.getElementById('content-area').classList.add('active');
-            document.getElementById('coming-soon-view').style.display = 'none';
-            document.getElementById('back-home-btn').style.display = 'block';
-            
-            document.getElementById('current-app-title').innerText = appName;
+            const payload = { row: row, status: st, petugas: pt, balasan: blsn };
 
-            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
-            document.getElementById(appId).style.display = 'block';
-        }
-
-        function openComingSoon(moduleName) {
-            document.getElementById('home-view').classList.remove('active');
-            document.getElementById('content-area').classList.add('active');
-            
-            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
-            
-            document.getElementById('coming-soon-view').style.display = 'flex';
-            document.getElementById('cs-module-title').innerText = `Modul ${moduleName}`;
-            document.getElementById('current-app-title').innerText = `Modul ${moduleName} (Segera Hadir)`;
-            document.getElementById('back-home-btn').style.display = 'block';
-        }
-
-        function goHome() {
-            document.getElementById('content-area').classList.remove('active');
-            document.getElementById('home-view').classList.add('active');
-            document.getElementById('coming-soon-view').style.display = 'none';
-            document.getElementById('back-home-btn').style.display = 'none';
-            document.getElementById('current-app-title').innerText = "Portal Layanan Terpadu";
-
-            document.querySelectorAll('iframe').forEach(iframe => iframe.style.display = 'none');
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "updateTicket", data: payload })
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(st === 'Selesai') {
+                    const itemIndex = dataKendalaMaster.findIndex(item => item.row === row);
+                    if (itemIndex > -1) {
+                        dataKendalaMaster[itemIndex].status = 'Selesai';
+                        dataKendalaMaster[itemIndex].petugas = pt;
+                        dataKendalaMaster[itemIndex].balasanAdmin = blsn;
+                    }
+                    const activeFilter = document.getElementById('statusLoadMonitoring').innerText.replace('Menampilkan To-Do: ', '');
+                    filterKendala(activeFilter);
+                    renderRekapitulasi();
+                    alert("Sukses tersimpan ke Spreadsheet! Tiket ditutup dan diarsipkan dari daftar To-Do.");
+                } else {
+                    btn.innerText = "Tersimpan!";
+                    btn.style.backgroundColor = "#0284c7";
+                    setTimeout(() => { btn.innerText = "Simpan Update"; btn.style.backgroundColor = "#16a34a"; }, 2000);
+                }
+            }).catch(err => {
+                alert("Gagal menyimpan ke Sheet. Periksa koneksi.");
+                btn.innerText = "Simpan Update";
+                btn.style.backgroundColor = "#16a34a";
+            });
         }
     </script>
-
 </body>
 </html>
